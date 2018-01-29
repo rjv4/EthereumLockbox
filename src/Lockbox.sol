@@ -8,12 +8,12 @@ contract Lockbox {
   function Lockbox(uint _unlockTime, address _trustee) public {
     owner = msg.sender;
     unlockTime = _unlockTime;
-	trustee = _trustee;
+    trustee = _trustee;
   }
 
   function upDateUnlockTime(uint _updatedUnlockTime) public {
-	if (msg.sender == owner)
-		unlockTime = _updatedUnlockTime;
+    if (msg.sender == owner)
+      unlockTime = _updatedUnlockTime;
   }
 
   function isUnlocked() internal returns (bool) {
@@ -28,7 +28,7 @@ contract Lockbox {
   }
   
   function kill() public { 
-	if (msg.sender == owner) 
-		selfdestruct(owner); 
+    if (msg.sender == owner) 
+      selfdestruct(owner); 
   }
 }
