@@ -10,7 +10,9 @@ contract Lockbox {
     unlockTime = _unlockTime;
     trustee = _trustee;
   }
-
+  
+  function() public payable { }
+   
   function upDateUnlockTime(uint _updatedUnlockTime) public {
     if (msg.sender == owner)
       unlockTime = _updatedUnlockTime;
