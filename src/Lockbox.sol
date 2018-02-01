@@ -1,36 +1,39 @@
 pragma solidity ^0.4.19;
 
 contract Lockbox {
-  address owner;
-  address trustee;
-  uint unlockTime;
+  mapping(address => uint256) public balances;
+  mapping(address => address) public trustees;
+  mapping(address => uint) public unlockTimes;
 
-  function Lockbox(uint _unlockTime, address _trustee) public {
-    owner = msg.sender;
-    unlockTime = _unlockTime;
-    trustee = _trustee;
+  function deposit() public payable {
+	   balances[msg.sender] += msg.value;
   }
-  
-  function() public payable { }
-   
+
   function upDateUnlockTime(uint _updatedUnlockTime) public {
-    if (msg.sender == owner)
-      unlockTime = _updatedUnlockTime;
+    unlockTimes[msg.sender] = _updatedUnlockTime;
   }
 
-  function isUnlocked() internal returns (bool) {
-    return now >= unlockTime;
+  function isUnlocked(address _depositorAddress) public view returns (bool) {
+    return now >= unlockTimes[_depositorAddress];
   }
 
-  modifier onlyTrustee() { require(msg.sender == trustee); _; }
-  modifier onlyWhenUnlocked() { require(isUnlocked()); _; }
-
-  function withdrawBalance() payable onlyTrustee onlyWhenUnlocked public {
-    trustee.transfer(address(this).balance);
+  function setTrustee(address _trustee) public {
+    trustees[msg.sender] = _trustee;
   }
-  
-  function kill() public { 
-    if (msg.sender == owner) 
-      selfdestruct(owner); 
+
+  function isTrustee(address _depositorAddress) public view returns (bool) {
+    return msg.sender == trustees[_depositorAddress];
+  }
+
+  function withdrawBalance(address _depositorAddress) public {
+    if (msg.sender == _depositorAddress) {
+        msg.sender.transfer(balances[_depositorAddress]);
+        balances[msg.sender] = 0;
+    }
+
+    if (isTrustee(_depositorAddress) && isUnlocked(_depositorAddress)) {
+      trustees[_depositorAddress].transfer(balances[_depositorAddress]);
+      balances[_depositorAddress] = 0;
+    }
   }
 }
