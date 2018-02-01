@@ -6,7 +6,7 @@ contract Lockbox {
   mapping(address => uint) public unlockTimes;
 
   function deposit() public payable {
-	   balances[msg.sender] += msg.value;
+    balances[msg.sender] += msg.value;
   }
 
   function upDateUnlockTime(uint _updatedUnlockTime) public {
