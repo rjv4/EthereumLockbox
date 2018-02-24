@@ -9,8 +9,8 @@ contract Lockbox {
     balances[msg.sender] += msg.value;
   }
 
-  function upDateUnlockTime(uint _updatedUnlockTime) public {
-    unlockTimes[msg.sender] = _updatedUnlockTime;
+  function upDateUnlockTime(uint _daysOutFromNow) public {
+    unlockTimes[msg.sender] = now + _daysOutFromNow * 1 days;
   }
 
   function isUnlocked(address _depositorAddress) public view returns (bool) {
